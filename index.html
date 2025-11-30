@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Connecting to Tunnel...</title>
+    <script>
+        
+        const gistUrl = "https://gist.githubusercontent.com/blablaspider-source/2bcc204421adbe289326f20a63de5705/raw/0df069acd93927c09dfb1c5fa2d8d71ff9277341/tunnel_url.txt";
+
+        fetch(gistUrl)
+            .then(response => response.text())
+            .then(url => {
+                url = url.trim(); // Remove any whitespace
+                if(url.startsWith("http")) {
+                    window.location.href = url;
+                } else {
+                    document.body.innerHTML = "Error: Valid URL not found in Gist.";
+                }
+            })
+            .catch(err => {
+                document.body.innerHTML = "Error loading tunnel URL.";
+            });
+    </script>
+</head>
+<body>
+    <h2>Redirecting to server...</h2>
+    <p>Please wait while we fetch the latest connection.</p>
+</body>
+</html>
