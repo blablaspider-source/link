@@ -1,28 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Connecting to Tunnel...</title>
-    <script>
-        
-        const gistUrl = "https://gist.githubusercontent.com/blablaspider-source/2bcc204421adbe289326f20a63de5705/raw/0df069acd93927c09dfb1c5fa2d8d71ff9277341/tunnel_url.txt";
-
-        fetch(gistUrl)
-            .then(response => response.text())
-            .then(url => {
-                url = url.trim(); // Remove any whitespace
-                if(url.startsWith("http")) {
-                    window.location.href = url;
-                } else {
-                    document.body.innerHTML = "Error: Valid URL not found in Gist.";
-                }
-            })
-            .catch(err => {
-                document.body.innerHTML = "Error loading tunnel URL.";
-            });
-    </script>
+    <meta charset="UTF-8">
+    <title>Loading...</title>
+    <style>
+        /* Hide everything initially */
+        body { margin: 0; background: #fff; font-family: sans-serif; }
+        #error-container { 
+            display: none; /* Hidden by default */
+            padding: 20px; 
+            text-align: center; 
+            margin-top: 20%; 
+        }
+        .error-box { 
+            display: inline-block;
+            padding: 15px 20px;
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Redirecting to server...</h2>
-    <p>Please wait while we fetch the latest connection.</p>
+
+    <div id="error-container">
+        <div class="error-box">
+            <strong>Connection Failed</strong><br>
+            <span id="error-reason">Trying to reconnect...</span>
+        </div>
+    </div>
+
+    <script>
+        const gistUrl = "https://gist.githubusercontent.com/blablaspider-source/2bcc204421adbe289326f20a63de5705/raw/36384dd47096e591ead79fd4681880b96c646326/tunnel_url.txt";
+
+        // Use an Immediately Invoked Async Function for speed
+        (async function() {
+            try {
+                // Fetch fast, no cache
+                const response = await fetch(gistUrl, { cache: "no-store" });
+                
+                if (!response.ok) throw new Error("Server link not found.");
+                
+                const url = (await response.text()).trim();
+                
+                if (url.startsWith("http")) {
+                    // The Magic Jump - Instant
+                    window.location.replace(url);
+                } else {
+                    throw new Error("Server is currently offline.");
+                }
+
+            } catch (err) {
+                // Only now do we show anything to the user
+                document.getElementById("error-reason").innerText = err.message;
+                document.getElementById("error-container").style.display = "block";
+            }
+        })();
+    </script>
+
 </body>
 </html>
